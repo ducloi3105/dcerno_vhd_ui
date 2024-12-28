@@ -27,7 +27,7 @@ import Wrapper from "./components/Wrapper";
 import MicroCard from "examples/Cards/MicroCard";
 
 // Images
-import microphone from "assets/images/microphone.jpg";
+import microphone from "assets/images/microphone.png";
 
 // Data
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
