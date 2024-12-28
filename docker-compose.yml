@@ -1,0 +1,7 @@
+services:
+  dcerno_vhd_ui:
+    build: .
+    image: dcerno_vhd_ui:1.0.0
+    restart: always
+    ports:
+      - "3000:80"
