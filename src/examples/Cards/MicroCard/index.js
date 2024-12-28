@@ -33,8 +33,74 @@ import MicroDetail from "layouts/dashboard/components/MicroDetail";
 
 // Router
 import { Routes, Route } from "react-router-dom";
+import MDBadge from "../../../components/MDBadge";
 
-function MicroCard({ id, image, status, title, description, action }) {
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+import { toast } from 'react-toastify';
+
+
+function MicroCard({ id, image, status, title, action, ...props }) {
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpenDialog = () => {
+    setOpen(true);
+  };
+
+  const handlePreset = async () => {
+    let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/${id}/preset`;
+    let data;
+    try {
+      let response = await fetch(url, {
+          method: "POST",
+        });
+      data = await response.json();
+      console.log(data)
+      if (data && data.status_code >= 300) {
+        throw data.error
+      }
+      if (!data) {
+        throw "Không thể kết nối đến server"
+      }
+      toast.success("Gán thành công")
+    } catch (e) {
+      console.log(e)
+      toast.error("Gán preset thất bại")
+    }
+    handleClose()
+  }
+
+  const handleCall = async () => {
+    let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/${id}/call`;
+    let data;
+    try {
+      let response = await fetch(url, {
+          method: "POST",
+        });
+      data = await response.json();
+      if (data && data.status_code >= 300) {
+        throw data.error
+      }
+      if (!data) {
+        throw "Không thể kết nối đến server"
+      }
+      toast.success("Thành công")
+    } catch (e) {
+      console.log(e)
+      toast.error("Thất bại")
+    }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <Card
       sx={{
@@ -67,34 +133,28 @@ function MicroCard({ id, image, status, title, description, action }) {
           }}
         />
       </MDBox>
-      <MDBox px={2} mt={1} lineHeight={0}>
-        <MDTypography variant="button" fontWeight="light" color="text">
-          {status}
-        </MDTypography>
-      </MDBox>
-      <MDBox px={2}>
+      <MDBox px={2} mt={1}>
         <MDBox mb={1}>
-          {action.type === "internal" ? (
             <MDTypography
               component={Link}
               to={action.route}
               variant="h5"
               textTransform="capitalize"
             >
-              {title}
+              <MDTypography  color="text" mb={-1}>
+                Serial Number:
+              </MDTypography> {title}
             </MDTypography>
-          ) : (
-            <MDTypography
-              component="a"
-              href={action.route}
-              target="_blank"
-              rel="noreferrer"
-              variant="h5"
-              textTransform="capitalize"
-            >
-              {title}
-            </MDTypography>
-          )}
+        </MDBox>
+        <MDBox px={0} mb={1} lineHeight={0}>
+          <MDTypography  color="text">
+            Trạng thái:
+          </MDTypography>
+          {status === "1" ? <MDBox ml={-1}>
+            <MDBadge badgeContent="Đang hoạt động" color="success" variant="gradient" size="sm" />
+          </MDBox> : <MDBox ml={-1}>
+            <MDBadge badgeContent="Chưa bật" color="dark" variant="gradient" size="sm" />
+          </MDBox>}
         </MDBox>
         {/* <MDBox mb={1} lineHeight={0}>
           <MDTypography variant="button" fontWeight="light" color="text">
@@ -102,33 +162,54 @@ function MicroCard({ id, image, status, title, description, action }) {
           </MDTypography>
         </MDBox> */}
         <MDBox py={2} display="flex" justifyContent="space-between" alignItems="center">
-          {action.type === "internal" ? (
             <MDButton
               component={Link}
               to={action.route}
-              variant="outlined"
-              size="small"
+              variant="contained"
+              size="medium"
               color={action.color}
+              sx={{
+                width: "48%"
+              }}
+              onClick={handleOpenDialog}
             >
-              {"Preset"}
+              Preset
             </MDButton>
-          ) : (
-            <MDButton
-              component="a"
-              href={action.route}
-              target="_blank"
-              rel="noreferrer"
-              variant="outlined"
-              size="small"
+          <MDButton
+              component={Link}
+              to={action.route}
+              variant="contained"
+              size="medium"
               color={action.color}
+              sx={{
+                width: "48%"
+              }}
+              onClick={handleCall}
             >
-              {action.label}
+              Call
             </MDButton>
-          )}
-          {/* <Routes>
-            <Route path="/dashboard/:id" component={<MicroDetail />} />
-          </Routes> */}
         </MDBox>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {`Xác nhận`}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {`Bạn có muốn gán vị trí camera cho micro ${id}?`}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="error">Từ chối</Button>
+            <Button onClick={handlePreset} autoFocus>
+              Chấp nhận
+            </Button>
+          </DialogActions>
+        </Dialog>
       </MDBox>
     </Card>
   );
@@ -143,7 +224,7 @@ MicroCard.propTypes = {
   image: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
+  description: PropTypes.string,
   action: PropTypes.shape({
     type: PropTypes.oneOf(["external", "internal"]),
     route: PropTypes.string,

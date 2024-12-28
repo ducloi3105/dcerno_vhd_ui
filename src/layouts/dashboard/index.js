@@ -32,109 +32,44 @@ import microphone from "assets/images/microphone.png";
 // Data
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 
-// Routes
-import routes from "routes";
+// Hooks
+import React, { useEffect, useState } from "react";
+
+import { ToastContainer } from 'react-toastify';
 
 function Dashboard() {
-  const { sales, tasks } = reportsLineChartData;
+  const [microItems, setMicroItems] = useState([])
 
-  let microItems = [
-    {
-      id: "01-23-45-67-89-ab",
-      status: "active",
-      image: microphone,
-      title: "Mic 1",
-      description: "Lorem ipsum is placeholder text commonly used in the graphic",
-      action: {
-        type: "internal",
-        route: "1",
-        color: "info",
-        label: "view information",
-      },
-    },
-    {
-      id: "02-23-45-67-89-ab",
-      status: "active",
-      image: microphone,
-      title: "Mic 1",
-      description: "Lorem ipsum is placeholder text commonly used in the graphic",
-      action: {
-        type: "internal",
-        route: "/dashboard/2",
-        color: "info",
-        label: "view information",
-      },
-    },
-    {
-      id: "03-23-45-67-89-ab",
-      status: "active",
-      image: microphone,
-      title: "Mic 1",
-      description: "Lorem ipsum is placeholder text commonly used in the graphic",
-      action: {
-        type: "internal",
-        route: "/dashboard/3",
-        color: "info",
-        label: "view information",
-      },
-    },
-    {
-      id: "04-23-45-67-89-ab",
-      status: "active",
-      image: microphone,
-      title: "Mic 1",
-      description: "Lorem ipsum is placeholder text commonly used in the graphic",
-      action: {
-        type: "internal",
-        route: "/dashboard/4",
-        color: "info",
-        label: "view information",
-      },
-    },
-    {
-      id: "05-23-45-67-89-ab",
-      status: "active",
-      image: microphone,
-      title: "Mic 1",
-      description: "Lorem ipsum is placeholder text commonly used in the graphic",
-      action: {
-        type: "internal",
-        route: "/dashboard/5",
-        color: "info",
-        label: "view information",
-      },
-    },
-    {
-      id: "06-23-45-67-89-ab",
-      status: "active",
-      image: microphone,
-      title: "Mic 1",
-      description: "Lorem ipsum is placeholder text commonly used in the graphic",
-      action: {
-        type: "internal",
-        route: "/dashboard/6",
-        color: "info",
-        label: "view information",
-      },
-    },
-    {
-      id: "07-23-45-67-89-ab",
-      status: "active",
-      image: microphone,
-      title: "Mic 1",
-      description: "Lorem ipsum is placeholder text commonly used in the graphic",
-      action: {
-        type: "internal",
-        color: "info",
-        label: "view information",
-      },
-    },
-  ];
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_SERVICE_URL}/microphones`, {
+          method: "GET",
+        });
+        let data = await response.json();
+        setMicroItems(data.micros.map((micro) => {
+          return {
+            id: micro.uid,
+            status: micro.stat,
+            title: micro.uid,
+            image: microphone,
+              action: {
+              type: "internal",
+              color: "info",
+              label: "",
+            },
+          }
+        }));
+      } catch (e) {
+        console.log(e)
+      }
+    }
+    fetchData()
+    let interval = setInterval(() => fetchData(), (1000*20))
 
-  // microItems = microItems.map((item) => {
-  //   item.action.route = `/dashboard/${item.id}`;
-  //   return item;
-  // });
+    return () => clearInterval(interval);
+  }, []);
+
 
   return (
     <DashboardLayout>
@@ -143,7 +78,7 @@ function Dashboard() {
         <MDBox py={3} px={2}>
           <Grid container spacing={3}>
             {microItems.map((item) => (
-              <Grid item xs={12} md={6} lg={2} key={item.id}>
+              <Grid item xs={12} md={6} lg={3} key={item.id}>
                 <MDBox mb={1.5}>
                   <MicroCard
                     id={item.id}
@@ -159,6 +94,7 @@ function Dashboard() {
           </Grid>
         </MDBox>
       </Wrapper>
+      <ToastContainer />
     </DashboardLayout>
   );
 }
