@@ -96,13 +96,12 @@ function MicroCard({ id, image, status, title, description, action }) {
             </MDTypography>
           )}
         </MDBox>
-        <MDBox mb={1} lineHeight={0}>
+        {/* <MDBox mb={1} lineHeight={0}>
           <MDTypography variant="button" fontWeight="light" color="text">
             {description}
           </MDTypography>
-        </MDBox>
+        </MDBox> */}
         <MDBox py={2} display="flex" justifyContent="space-between" alignItems="center">
-          {/* <Link to={"/dashboard/" + id}> */}
           {action.type === "internal" ? (
             <MDButton
               component={Link}
@@ -111,7 +110,7 @@ function MicroCard({ id, image, status, title, description, action }) {
               size="small"
               color={action.color}
             >
-              {action.label}
+              {"Preset"}
             </MDButton>
           ) : (
             <MDButton
@@ -126,10 +125,9 @@ function MicroCard({ id, image, status, title, description, action }) {
               {action.label}
             </MDButton>
           )}
-          {/* </Link> */}
-          <Routes>
+          {/* <Routes>
             <Route path="/dashboard/:id" component={<MicroDetail />} />
-          </Routes>
+          </Routes> */}
         </MDBox>
       </MDBox>
     </Card>
@@ -148,7 +146,7 @@ MicroCard.propTypes = {
   description: PropTypes.string.isRequired,
   action: PropTypes.shape({
     type: PropTypes.oneOf(["external", "internal"]),
-    route: PropTypes.string.isRequired,
+    route: PropTypes.string,
     color: PropTypes.oneOf([
       "primary",
       "secondary",

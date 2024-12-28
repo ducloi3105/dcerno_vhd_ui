@@ -27,7 +27,7 @@ import Wrapper from "./components/Wrapper";
 import MicroCard from "examples/Cards/MicroCard";
 
 // Images
-import homeDecor1 from "assets/images/home-decor-1.jpg";
+import microphone from "assets/images/microphone.jpg";
 
 // Data
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
@@ -42,7 +42,7 @@ function Dashboard() {
     {
       id: "01-23-45-67-89-ab",
       status: "active",
-      image: homeDecor1,
+      image: microphone,
       title: "Mic 1",
       description: "Lorem ipsum is placeholder text commonly used in the graphic",
       action: {
@@ -55,7 +55,7 @@ function Dashboard() {
     {
       id: "02-23-45-67-89-ab",
       status: "active",
-      image: homeDecor1,
+      image: microphone,
       title: "Mic 1",
       description: "Lorem ipsum is placeholder text commonly used in the graphic",
       action: {
@@ -68,7 +68,7 @@ function Dashboard() {
     {
       id: "03-23-45-67-89-ab",
       status: "active",
-      image: homeDecor1,
+      image: microphone,
       title: "Mic 1",
       description: "Lorem ipsum is placeholder text commonly used in the graphic",
       action: {
@@ -81,7 +81,7 @@ function Dashboard() {
     {
       id: "04-23-45-67-89-ab",
       status: "active",
-      image: homeDecor1,
+      image: microphone,
       title: "Mic 1",
       description: "Lorem ipsum is placeholder text commonly used in the graphic",
       action: {
@@ -94,7 +94,7 @@ function Dashboard() {
     {
       id: "05-23-45-67-89-ab",
       status: "active",
-      image: homeDecor1,
+      image: microphone,
       title: "Mic 1",
       description: "Lorem ipsum is placeholder text commonly used in the graphic",
       action: {
@@ -107,7 +107,7 @@ function Dashboard() {
     {
       id: "06-23-45-67-89-ab",
       status: "active",
-      image: homeDecor1,
+      image: microphone,
       title: "Mic 1",
       description: "Lorem ipsum is placeholder text commonly used in the graphic",
       action: {
@@ -120,22 +120,21 @@ function Dashboard() {
     {
       id: "07-23-45-67-89-ab",
       status: "active",
-      image: homeDecor1,
+      image: microphone,
       title: "Mic 1",
       description: "Lorem ipsum is placeholder text commonly used in the graphic",
       action: {
         type: "internal",
-        route: "/dashboard/7",
         color: "info",
         label: "view information",
       },
     },
   ];
 
-  microItems = microItems.map((item) => {
-    item.action.route = `/dashboard/${item.id}`;
-    return item;
-  });
+  // microItems = microItems.map((item) => {
+  //   item.action.route = `/dashboard/${item.id}`;
+  //   return item;
+  // });
 
   return (
     <DashboardLayout>

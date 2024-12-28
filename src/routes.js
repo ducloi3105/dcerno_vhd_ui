@@ -58,14 +58,14 @@ const routes = [
     route: "/dashboard",
     component: <Dashboard />,
   },
-  {
-    type: "hide",
-    name: "test",
-    key: "micro_item",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/dashboard/*",
-    component: <MicroDetail />,
-  },
+  // {
+  //   type: "hide",
+  //   name: "test",
+  //   key: "micro_item",
+  //   icon: <Icon fontSize="small"></Icon>,
+  //   route: "/dashboard/*",
+  //   component: <MicroDetail />,
+  // },
   // {
   //   type: "collapse",
   //   name: "Billing",
