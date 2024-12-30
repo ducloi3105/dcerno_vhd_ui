@@ -178,10 +178,15 @@ function DashboardNavbar({ absolute, light, isMini }) {
       if (!data) {
         throw new Error("Không thể kết nối đến server")
       }
-      if (data.success) {
-        toast.success("Televic đang bật")
-      } else {
+      if (data.cam_ping && data.mic_ping) {
+        toast.success("Kết nối thành công")
+      } else if (data.cam_ping){
         toast.warning("Televic đang tắt")
+      }else if (data.mic_ping){
+        toast.warning("Camera đang tắt")
+      } else {
+        toast.warning("Televic và Camera đang tắt")
+
       }
     } catch (e) {
       console.log(e)
@@ -245,18 +250,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 variant="contained"
                 size="medium"
                 color="info"
-                // sx={{
-                //   mx: 2,
-                // }}
-                disabled={isCamera}
-                onClick={checkCamera}
-              >
-                Kiểm tra trạng thái Camera
-              </MDButton>
-              <MDButton
-                variant="contained"
-                size="medium"
-                color="info"
                 // color={isTelevic ? "success" : "secondary"}
                 sx={{
                   mx: 2,
@@ -264,7 +257,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 disabled={isTelevic}
                 onClick={checkTelevic}
               >
-                Kiểm tra trạng thái Televic
+                Kiểm tra kết nối
               </MDButton>
               <IconButton
                 size="small"
