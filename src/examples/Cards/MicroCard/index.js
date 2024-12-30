@@ -46,7 +46,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { toast } from 'react-toastify';
 
 
-function MicroCard({ id, image, status, title, action, ...props }) {
+function MicroCard({ id, image, status, preset, title, action, ...props }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
@@ -166,6 +166,16 @@ function MicroCard({ id, image, status, title, action, ...props }) {
             <MDBadge badgeContent="Tắt mic" color="dark" variant="gradient" size="sm" />
           </MDBox>}
         </MDBox>
+        <MDBox px={0} mb={1} lineHeight={0}>
+          <MDTypography color="text">
+            Preset:
+          </MDTypography>
+          {preset === true ? <MDBox ml={-1}>
+            <MDBadge badgeContent="Đã set" color="success" variant="gradient" size="sm" />
+          </MDBox> : <MDBox ml={-1}>
+            <MDBadge badgeContent="Chưa set" color="dark" variant="gradient" size="sm" />
+          </MDBox>}
+        </MDBox>
         {/* <MDBox mb={1} lineHeight={0}>
           <MDTypography variant="button" fontWeight="light" color="text">
             {description}
@@ -235,6 +245,7 @@ MicroCard.propTypes = {
   id: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
+  preset: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
   action: PropTypes.shape({

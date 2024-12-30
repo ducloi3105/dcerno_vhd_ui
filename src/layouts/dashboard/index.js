@@ -48,6 +48,7 @@ function Dashboard() {
             id: micro.uid,
             status: micro.stat,
             title: micro.uid,
+            preset: micro.preset,
             image: microphone,
             action: {
               type: "internal",
@@ -83,6 +84,7 @@ function Dashboard() {
                     title={item.title}
                     description={item.description}
                     action={item.action}
+                    preset={item.preset}
                   />
                 </MDBox>
               </Grid>
