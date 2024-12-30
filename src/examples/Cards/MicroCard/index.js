@@ -161,9 +161,9 @@ function MicroCard({ id, image, status, title, action, ...props }) {
             Trạng thái:
           </MDTypography>
           {status === "1" ? <MDBox ml={-1}>
-            <MDBadge badgeContent="Đang hoạt động" color="success" variant="gradient" size="sm" />
+            <MDBadge badgeContent="Bật mic" color="success" variant="gradient" size="sm" />
           </MDBox> : <MDBox ml={-1}>
-            <MDBadge badgeContent="Chưa bật" color="dark" variant="gradient" size="sm" />
+            <MDBadge badgeContent="Tắt mic" color="dark" variant="gradient" size="sm" />
           </MDBox>}
         </MDBox>
         {/* <MDBox mb={1} lineHeight={0}>
