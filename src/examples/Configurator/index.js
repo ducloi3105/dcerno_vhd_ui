@@ -59,6 +59,7 @@ function Configurator() {
     darkMode,
   } = controller;
   const [disabled, setDisabled] = useState(false);
+  const [autoTracking, setAutoTracking] = useState(false);
   const sidenavColors = ["primary", "dark", "info", "success", "warning", "error"];
 
   // Use the useEffect hook to change the button state for the sidenav type based on window size.
@@ -77,6 +78,10 @@ function Configurator() {
     // Remove event listener on cleanup
     return () => window.removeEventListener("resize", handleDisabled);
   }, []);
+
+  const hanldeAutoTracking = () => {
+    setAutoTracking(!autoTracking);
+  }
 
   const handleCloseConfigurator = () => setOpenConfigurator(dispatch, false);
   const handleTransparentSidenav = () => {
@@ -163,7 +168,15 @@ function Configurator() {
 
       <MDBox pt={0.5} pb={3} px={3}>
         <MDBox>
-          <MDTypography variant="h6">Sidenav Colors</MDTypography>
+          <MDTypography variant="h5">Camera settings</MDTypography>
+          <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
+            <MDTypography variant="h6">Auto Tracking</MDTypography>
+
+            <Switch checked={autoTracking} onChange={hanldeAutoTracking} />
+          </MDBox>
+          <Divider />
+
+          <MDTypography variant="h5">Sidenav Colors</MDTypography>
 
           <MDBox mb={0.5}>
             {sidenavColors.map((color) => (
@@ -209,7 +222,7 @@ function Configurator() {
         </MDBox>
 
         <MDBox mt={3} lineHeight={1}>
-          <MDTypography variant="h6">Sidenav Type</MDTypography>
+          <MDTypography variant="h5">Sidenav Type</MDTypography>
           <MDTypography variant="button" color="text">
             Choose between different sidenav types.
           </MDTypography>
@@ -284,7 +297,6 @@ function Configurator() {
 
           <Switch checked={darkMode} onChange={handleDarkMode} />
         </MDBox>
-        {/* <Divider /> */}
       </MDBox>
     </ConfiguratorRoot>
   );

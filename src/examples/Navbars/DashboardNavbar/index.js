@@ -31,6 +31,7 @@ import Icon from "@mui/material/Icon";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDInput from "components/MDInput";
+import MDButton from "components/MDButton";
 
 // Material Dashboard 2 React example components
 import Breadcrumbs from "examples/Breadcrumbs";
@@ -136,6 +137,30 @@ function DashboardNavbar({ absolute, light, isMini }) {
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
             <MDBox color={light ? "white" : "inherit"}>
+              <MDButton
+                variant="contained"
+                size="medium"
+                color="success"
+                // sx={{
+                //   mx: 2,
+                // }}
+                onClick={() => console.log('test')}
+                disabled={false}
+              >
+                Camera: On
+              </MDButton>
+              <MDButton
+                variant="contained"
+                size="medium"
+                color="success"
+                sx={{
+                  mx: 2,
+                }}
+                onClick={() => console.log('test')}
+                disabled={false}
+              >
+                Microphone: On
+              </MDButton>
               <IconButton
                 size="small"
                 disableRipple
