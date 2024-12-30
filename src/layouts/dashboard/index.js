@@ -22,15 +22,11 @@ import MDBox from "components/MDBox";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Header from "layouts/profile/components/Header";
 import Wrapper from "./components/Wrapper";
 import MicroCard from "examples/Cards/MicroCard";
 
 // Images
 import microphone from "assets/images/microphone.png";
-
-// Data
-import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 
 // Hooks
 import React, { useEffect, useState } from "react";
@@ -53,7 +49,7 @@ function Dashboard() {
             status: micro.stat,
             title: micro.uid,
             image: microphone,
-              action: {
+            action: {
               type: "internal",
               color: "info",
               label: "",
