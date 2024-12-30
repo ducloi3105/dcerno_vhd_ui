@@ -31,6 +31,7 @@ import Icon from "@mui/material/Icon";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDInput from "components/MDInput";
+import MDButton from "components/MDButton";
 
 // Material Dashboard 2 React example components
 import Breadcrumbs from "examples/Breadcrumbs";
@@ -52,12 +53,15 @@ import {
   setMiniSidenav,
   setOpenConfigurator,
 } from "context";
+import { toast } from "react-toastify";
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
+  const [isCamera, setIsCamera] = useState(false);
+  const [isTelevic, setIsTelevic] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
 
   useEffect(() => {
@@ -73,6 +77,44 @@ function DashboardNavbar({ absolute, light, isMini }) {
       setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
     }
 
+  const checkCamera = async () => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    let url = `${process.env.REACT_APP_SERVICE_URL}/camera/ping`;
+    let data;
+    try {
+      let response = await fetch(url, {
+        method: "GET",
+      });
+      data = await response.json();
+      setIsCamera(data.success)
+    } catch (e) {
+      console.log(e)
+    } finally {
+    }
+  }
+
+  const checkTelevic = async () => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/ping`;
+    let data;
+    try {
+      let response = await fetch(url, {
+        method: "GET",
+      });
+      data = await response.json();
+      console.log(data)
+      setIsTelevic(data.success)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+    // const checkDevicesStatus = async () => {
+    //   await checkCamera()
+    //   await checkTelevic();
+    // };
+
+    // let interval = setInterval(() => checkDevicesStatus(), (1000*5))
+
     /** 
      The event listener that's calling the handleTransparentNavbar function when 
      scrolling the window.
@@ -83,8 +125,71 @@ function DashboardNavbar({ absolute, light, isMini }) {
     handleTransparentNavbar();
 
     // Remove event listener on cleanup
-    return () => window.removeEventListener("scroll", handleTransparentNavbar);
+    return () => {
+      window.removeEventListener("scroll", handleTransparentNavbar)
+      // clearInterval(interval)
+    };
   }, [dispatch, fixedNavbar]);
+
+  const checkCamera = async () => {
+    setIsCamera(true)
+    await new Promise(resolve => setTimeout(resolve, 500));
+    let url = `${process.env.REACT_APP_SERVICE_URL}/camera/ping`;
+    let data;
+    try {
+      let response = await fetch(url, {
+        method: "GET",
+      });
+      let status = response.status
+      data = await response.json();
+      if (status >= 300) {
+        throw new Error(data.error)
+      }
+      if (!data) {
+        throw new Error("Không thể kết nối đến server")
+      }
+      if (data.success) {
+        toast.success("Camera đang bật")
+      } else {
+        toast.warning("Camera đang tắt")
+      }
+    } catch (e) {
+      console.log(e)
+      toast.error("Không thể kiểm tra trạng thái Camera")
+    } finally {
+      setIsCamera(false)
+    }
+  }
+
+  const checkTelevic = async () => {
+    setIsTelevic(true)
+    await new Promise(resolve => setTimeout(resolve, 500));
+    let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/ping`;
+    let data;
+    try {
+      let response = await fetch(url, {
+        method: "GET",
+      });
+      let status = response.status
+      data = await response.json();
+      if (status >= 300) {
+        throw new Error(data.error)
+      }
+      if (!data) {
+        throw new Error("Không thể kết nối đến server")
+      }
+      if (data.success) {
+        toast.success("Televic đang bật")
+      } else {
+        toast.warning("Televic đang tắt")
+      }
+    } catch (e) {
+      console.log(e)
+      toast.error("Không thể kiểm tra trạng thái Televic")
+    } finally {
+      setIsTelevic(false)
+    }
+  }
 
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
@@ -136,6 +241,31 @@ function DashboardNavbar({ absolute, light, isMini }) {
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
             <MDBox color={light ? "white" : "inherit"}>
+              <MDButton
+                variant="contained"
+                size="medium"
+                color="info"
+                // sx={{
+                //   mx: 2,
+                // }}
+                disabled={isCamera}
+                onClick={checkCamera}
+              >
+                Kiểm tra trạng thái Camera
+              </MDButton>
+              <MDButton
+                variant="contained"
+                size="medium"
+                color="info"
+                // color={isTelevic ? "success" : "secondary"}
+                sx={{
+                  mx: 2,
+                }}
+                disabled={isTelevic}
+                onClick={checkTelevic}
+              >
+                Kiểm tra trạng thái Televic
+              </MDButton>
               <IconButton
                 size="small"
                 disableRipple

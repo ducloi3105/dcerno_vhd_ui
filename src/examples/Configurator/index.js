@@ -48,6 +48,9 @@ import {
   setDarkMode,
 } from "context";
 
+// Notification
+import { toast } from 'react-toastify';
+
 function Configurator() {
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -59,10 +62,29 @@ function Configurator() {
     darkMode,
   } = controller;
   const [disabled, setDisabled] = useState(false);
+  const [autoTracking, setAutoTracking] = useState(false);
   const sidenavColors = ["primary", "dark", "info", "success", "warning", "error"];
 
   // Use the useEffect hook to change the button state for the sidenav type based on window size.
   useEffect(() => {
+    const fetchAutoTracking = async () => {
+      let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/tracking`;
+      let data;
+      try {
+        let response = await fetch(url, {
+          method: "GET",
+        });
+        let status = response.status
+        if (status !== 200) {
+          setAutoTracking(false)
+          return
+        }
+        data = await response.json();
+        setAutoTracking(data.tracking_enabled)
+      } catch (e) {
+        console.log(e)
+      }
+    }
     // A function that sets the disabled state of the buttons for the sidenav type.
     function handleDisabled() {
       return window.innerWidth > 1200 ? setDisabled(false) : setDisabled(true);
@@ -74,9 +96,43 @@ function Configurator() {
     // Call the handleDisabled function to set the state with the initial value.
     handleDisabled();
 
+
+    fetchAutoTracking()
     // Remove event listener on cleanup
     return () => window.removeEventListener("resize", handleDisabled);
   }, []);
+
+  const hanldeAutoTracking = async (e) => {
+    let isAutoTracking = e.target.checked
+    let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/tracking?tracking_enabled=${isAutoTracking}`;
+    let data;
+    try {
+      let response = await fetch(url, {
+        method: "POST",
+      });
+      let status = response.status
+      data = await response.json();
+      if (data && status >= 300) {
+        throw new Error(data.error)
+      }
+      if (!data) {
+        throw new Error("Không thể kết nối đến server")
+      }
+
+      if (status === 200) {
+        if (isAutoTracking) {
+          toast.success('Bật auto tracking thành công')
+        } else {
+          toast.success('Tắt auto tracking thành công')
+        }
+        setAutoTracking(!autoTracking);
+      }
+    } catch (e) {
+      toast.error('Lỗi khi bật/tắt auto tracking')
+    } finally {
+
+    }
+  }
 
   const handleCloseConfigurator = () => setOpenConfigurator(dispatch, false);
   const handleTransparentSidenav = () => {
@@ -163,110 +219,118 @@ function Configurator() {
 
       <MDBox pt={0.5} pb={3} px={3}>
         <MDBox>
-          <MDTypography variant="h6">Sidenav Colors</MDTypography>
+          <MDTypography variant="h5">Camera settings</MDTypography>
+          <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
+            <MDTypography variant="h6">Auto Tracking</MDTypography>
 
-          <MDBox mb={0.5}>
-            {sidenavColors.map((color) => (
-              <IconButton
-                key={color}
-                sx={({
-                  borders: { borderWidth },
-                  palette: { white, dark, background },
-                  transitions,
-                }) => ({
-                  width: "24px",
-                  height: "24px",
-                  padding: 0,
-                  border: `${borderWidth[1]} solid ${darkMode ? background.sidenav : white.main}`,
-                  borderColor: () => {
-                    let borderColorValue = sidenavColor === color && dark.main;
-
-                    if (darkMode && sidenavColor === color) {
-                      borderColorValue = white.main;
-                    }
-
-                    return borderColorValue;
-                  },
-                  transition: transitions.create("border-color", {
-                    easing: transitions.easing.sharp,
-                    duration: transitions.duration.shorter,
-                  }),
-                  backgroundImage: ({ functions: { linearGradient }, palette: { gradients } }) =>
-                    linearGradient(gradients[color].main, gradients[color].state),
-
-                  "&:not(:last-child)": {
-                    mr: 1,
-                  },
-
-                  "&:hover, &:focus, &:active": {
-                    borderColor: darkMode ? white.main : dark.main,
-                  },
-                })}
-                onClick={() => setSidenavColor(dispatch, color)}
-              />
-            ))}
+            <Switch checked={autoTracking} onChange={(e) => hanldeAutoTracking(e)} />
           </MDBox>
+          <Divider />
+
+          {/*<MDTypography variant="h5">Sidenav Colors</MDTypography>*/}
+
+          {/*<MDBox mb={0.5}>*/}
+          {/*  {sidenavColors.map((color) => (*/}
+          {/*    <IconButton*/}
+          {/*      key={color}*/}
+          {/*      sx={({*/}
+          {/*        borders: { borderWidth },*/}
+          {/*        palette: { white, dark, background },*/}
+          {/*        transitions,*/}
+          {/*      }) => ({*/}
+          {/*        width: "24px",*/}
+          {/*        height: "24px",*/}
+          {/*        padding: 0,*/}
+          {/*        border: `${borderWidth[1]} solid ${darkMode ? background.sidenav : white.main}`,*/}
+          {/*        borderColor: () => {*/}
+          {/*          let borderColorValue = sidenavColor === color && dark.main;*/}
+
+          {/*          if (darkMode && sidenavColor === color) {*/}
+          {/*            borderColorValue = white.main;*/}
+          {/*          }*/}
+
+          {/*          return borderColorValue;*/}
+          {/*        },*/}
+          {/*        transition: transitions.create("border-color", {*/}
+          {/*          easing: transitions.easing.sharp,*/}
+          {/*          duration: transitions.duration.shorter,*/}
+          {/*        }),*/}
+          {/*        backgroundImage: ({ functions: { linearGradient }, palette: { gradients } }) =>*/}
+          {/*          linearGradient(gradients[color].main, gradients[color].state),*/}
+
+          {/*        "&:not(:last-child)": {*/}
+          {/*          mr: 1,*/}
+          {/*        },*/}
+
+          {/*        "&:hover, &:focus, &:active": {*/}
+          {/*          borderColor: darkMode ? white.main : dark.main,*/}
+          {/*        },*/}
+          {/*      })}*/}
+          {/*      onClick={() => setSidenavColor(dispatch, color)}*/}
+          {/*    />*/}
+          {/*  ))}*/}
+          {/*</MDBox>*/}
         </MDBox>
 
-        <MDBox mt={3} lineHeight={1}>
-          <MDTypography variant="h6">Sidenav Type</MDTypography>
-          <MDTypography variant="button" color="text">
-            Choose between different sidenav types.
-          </MDTypography>
+        {/*<MDBox mt={3} lineHeight={1}>*/}
+        {/*  <MDTypography variant="h5">Sidenav Type</MDTypography>*/}
+        {/*  <MDTypography variant="button" color="text">*/}
+        {/*    Choose between different sidenav types.*/}
+        {/*  </MDTypography>*/}
 
-          <MDBox
-            sx={{
-              display: "flex",
-              mt: 2,
-              mr: 1,
-            }}
-          >
-            <MDButton
-              color="dark"
-              variant="gradient"
-              onClick={handleDarkSidenav}
-              disabled={disabled}
-              fullWidth
-              sx={
-                !transparentSidenav && !whiteSidenav
-                  ? sidenavTypeActiveButtonStyles
-                  : sidenavTypeButtonsStyles
-              }
-            >
-              Dark
-            </MDButton>
-            <MDBox sx={{ mx: 1, width: "8rem", minWidth: "8rem" }}>
-              <MDButton
-                color="dark"
-                variant="gradient"
-                onClick={handleTransparentSidenav}
-                disabled={disabled}
-                fullWidth
-                sx={
-                  transparentSidenav && !whiteSidenav
-                    ? sidenavTypeActiveButtonStyles
-                    : sidenavTypeButtonsStyles
-                }
-              >
-                Transparent
-              </MDButton>
-            </MDBox>
-            <MDButton
-              color="dark"
-              variant="gradient"
-              onClick={handleWhiteSidenav}
-              disabled={disabled}
-              fullWidth
-              sx={
-                whiteSidenav && !transparentSidenav
-                  ? sidenavTypeActiveButtonStyles
-                  : sidenavTypeButtonsStyles
-              }
-            >
-              White
-            </MDButton>
-          </MDBox>
-        </MDBox>
+        {/*  <MDBox*/}
+        {/*    sx={{*/}
+        {/*      display: "flex",*/}
+        {/*      mt: 2,*/}
+        {/*      mr: 1,*/}
+        {/*    }}*/}
+        {/*  >*/}
+        {/*    <MDButton*/}
+        {/*      color="dark"*/}
+        {/*      variant="gradient"*/}
+        {/*      onClick={handleDarkSidenav}*/}
+        {/*      disabled={disabled}*/}
+        {/*      fullWidth*/}
+        {/*      sx={*/}
+        {/*        !transparentSidenav && !whiteSidenav*/}
+        {/*          ? sidenavTypeActiveButtonStyles*/}
+        {/*          : sidenavTypeButtonsStyles*/}
+        {/*      }*/}
+        {/*    >*/}
+        {/*      Dark*/}
+        {/*    </MDButton>*/}
+        {/*    <MDBox sx={{ mx: 1, width: "8rem", minWidth: "8rem" }}>*/}
+        {/*      <MDButton*/}
+        {/*        color="dark"*/}
+        {/*        variant="gradient"*/}
+        {/*        onClick={handleTransparentSidenav}*/}
+        {/*        disabled={disabled}*/}
+        {/*        fullWidth*/}
+        {/*        sx={*/}
+        {/*          transparentSidenav && !whiteSidenav*/}
+        {/*            ? sidenavTypeActiveButtonStyles*/}
+        {/*            : sidenavTypeButtonsStyles*/}
+        {/*        }*/}
+        {/*      >*/}
+        {/*        Transparent*/}
+        {/*      </MDButton>*/}
+        {/*    </MDBox>*/}
+        {/*    <MDButton*/}
+        {/*      color="dark"*/}
+        {/*      variant="gradient"*/}
+        {/*      onClick={handleWhiteSidenav}*/}
+        {/*      disabled={disabled}*/}
+        {/*      fullWidth*/}
+        {/*      sx={*/}
+        {/*        whiteSidenav && !transparentSidenav*/}
+        {/*          ? sidenavTypeActiveButtonStyles*/}
+        {/*          : sidenavTypeButtonsStyles*/}
+        {/*      }*/}
+        {/*    >*/}
+        {/*      White*/}
+        {/*    </MDButton>*/}
+        {/*  </MDBox>*/}
+        {/*</MDBox>*/}
         <MDBox
           display="flex"
           justifyContent="space-between"
@@ -284,7 +348,6 @@ function Configurator() {
 
           <Switch checked={darkMode} onChange={handleDarkMode} />
         </MDBox>
-        {/* <Divider /> */}
       </MDBox>
     </ConfiguratorRoot>
   );

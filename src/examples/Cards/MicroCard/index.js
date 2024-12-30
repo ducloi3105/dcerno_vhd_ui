@@ -48,52 +48,62 @@ import { toast } from 'react-toastify';
 
 function MicroCard({ id, image, status, title, action, ...props }) {
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const handleOpenDialog = () => {
     setOpen(true);
   };
 
   const handlePreset = async () => {
+    setLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 500));
     let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/${id}/preset`;
     let data;
     try {
       let response = await fetch(url, {
-          method: "POST",
-        });
+        method: "POST",
+      });
+      let status = response.status
       data = await response.json();
-      console.log(data)
-      if (data && data.status_code >= 300) {
-        throw data.error
+      if (status >= 300) {
+        throw new Error(data.error)
       }
       if (!data) {
-        throw "Không thể kết nối đến server"
+        throw new Error("Không thể kết nối đến server")
       }
       toast.success("Gán thành công")
     } catch (e) {
       console.log(e)
-      toast.error("Gán preset thất bại")
+      toast.error("Gán thất bại")
+    } finally {
+      setLoading(false);
     }
     handleClose()
   }
 
   const handleCall = async () => {
+    setLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 500));
     let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/${id}/call`;
     let data;
     try {
       let response = await fetch(url, {
-          method: "POST",
-        });
+        method: "POST",
+      });
+      let status = response.status
       data = await response.json();
-      if (data && data.status_code >= 300) {
-        throw data.error
+      if (status >= 300) {
+        throw new Error(data.error)
       }
       if (!data) {
-        throw "Không thể kết nối đến server"
+        throw new Error("Không thể kết nối đến server")
       }
       toast.success("Thành công")
     } catch (e) {
       console.log(e)
       toast.error("Thất bại")
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -135,19 +145,19 @@ function MicroCard({ id, image, status, title, action, ...props }) {
       </MDBox>
       <MDBox px={2} mt={1}>
         <MDBox mb={1}>
-            <MDTypography
-              component={Link}
-              to={action.route}
-              variant="h5"
-              textTransform="capitalize"
-            >
-              <MDTypography  color="text" mb={-1}>
-                Serial Number:
-              </MDTypography> {title}
-            </MDTypography>
+          <MDTypography
+            component={Link}
+            to={action.route}
+            variant="h5"
+            textTransform="capitalize"
+          >
+            <MDTypography color="text" mb={-1}>
+              Serial Number:
+            </MDTypography> {title}
+          </MDTypography>
         </MDBox>
         <MDBox px={0} mb={1} lineHeight={0}>
-          <MDTypography  color="text">
+          <MDTypography color="text">
             Trạng thái:
           </MDTypography>
           {status === "1" ? <MDBox ml={-1}>
@@ -162,32 +172,34 @@ function MicroCard({ id, image, status, title, action, ...props }) {
           </MDTypography>
         </MDBox> */}
         <MDBox py={2} display="flex" justifyContent="space-between" alignItems="center">
-            <MDButton
-              component={Link}
-              to={action.route}
-              variant="contained"
-              size="medium"
-              color={action.color}
-              sx={{
-                width: "48%"
-              }}
-              onClick={handleOpenDialog}
-            >
-              Preset
-            </MDButton>
           <MDButton
-              component={Link}
-              to={action.route}
-              variant="contained"
-              size="medium"
-              color={action.color}
-              sx={{
-                width: "48%"
-              }}
-              onClick={handleCall}
-            >
-              Call
-            </MDButton>
+            component={Link}
+            to={action.route}
+            variant="contained"
+            size="medium"
+            color={action.color}
+            sx={{
+              width: "48%"
+            }}
+            onClick={handleOpenDialog}
+            disabled={loading}
+          >
+            Preset
+          </MDButton>
+          <MDButton
+            component={Link}
+            to={action.route}
+            variant="contained"
+            size="medium"
+            color={action.color}
+            sx={{
+              width: "48%"
+            }}
+            onClick={handleCall}
+            disabled={loading}
+          >
+            Call
+          </MDButton>
         </MDBox>
         <Dialog
           open={open}
