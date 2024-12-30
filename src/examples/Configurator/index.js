@@ -194,10 +194,7 @@ function Configurator() {
         px={3}
       >
         <MDBox>
-          <MDTypography variant="h5">Configurator</MDTypography>
-          <MDTypography variant="body2" color="text">
-            See our options.
-          </MDTypography>
+          <MDTypography variant="h3">Cấu hình</MDTypography>
         </MDBox>
 
         <Icon
@@ -219,7 +216,7 @@ function Configurator() {
 
       <MDBox pt={0.5} pb={3} px={3}>
         <MDBox>
-          <MDTypography variant="h5">Camera settings</MDTypography>
+          <MDTypography variant="h5">Cấu hình Televic</MDTypography>
           <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
             <MDTypography variant="h6">Auto Tracking</MDTypography>
 
@@ -227,110 +224,107 @@ function Configurator() {
           </MDBox>
           <Divider />
 
-          {/*<MDTypography variant="h5">Sidenav Colors</MDTypography>*/}
+          <MDTypography variant="h5">Màu</MDTypography>
 
-          {/*<MDBox mb={0.5}>*/}
-          {/*  {sidenavColors.map((color) => (*/}
-          {/*    <IconButton*/}
-          {/*      key={color}*/}
-          {/*      sx={({*/}
-          {/*        borders: { borderWidth },*/}
-          {/*        palette: { white, dark, background },*/}
-          {/*        transitions,*/}
-          {/*      }) => ({*/}
-          {/*        width: "24px",*/}
-          {/*        height: "24px",*/}
-          {/*        padding: 0,*/}
-          {/*        border: `${borderWidth[1]} solid ${darkMode ? background.sidenav : white.main}`,*/}
-          {/*        borderColor: () => {*/}
-          {/*          let borderColorValue = sidenavColor === color && dark.main;*/}
+          <MDBox mb={0.5}>
+            {sidenavColors.map((color) => (
+              <IconButton
+                key={color}
+                sx={({
+                  borders: { borderWidth },
+                  palette: { white, dark, background },
+                  transitions,
+                }) => ({
+                  width: "24px",
+                  height: "24px",
+                  padding: 0,
+                  border: `${borderWidth[1]} solid ${darkMode ? background.sidenav : white.main}`,
+                  borderColor: () => {
+                    let borderColorValue = sidenavColor === color && dark.main;
 
-          {/*          if (darkMode && sidenavColor === color) {*/}
-          {/*            borderColorValue = white.main;*/}
-          {/*          }*/}
+                    if (darkMode && sidenavColor === color) {
+                      borderColorValue = white.main;
+                    }
 
-          {/*          return borderColorValue;*/}
-          {/*        },*/}
-          {/*        transition: transitions.create("border-color", {*/}
-          {/*          easing: transitions.easing.sharp,*/}
-          {/*          duration: transitions.duration.shorter,*/}
-          {/*        }),*/}
-          {/*        backgroundImage: ({ functions: { linearGradient }, palette: { gradients } }) =>*/}
-          {/*          linearGradient(gradients[color].main, gradients[color].state),*/}
+                    return borderColorValue;
+                  },
+                  transition: transitions.create("border-color", {
+                    easing: transitions.easing.sharp,
+                    duration: transitions.duration.shorter,
+                  }),
+                  backgroundImage: ({ functions: { linearGradient }, palette: { gradients } }) =>
+                    linearGradient(gradients[color].main, gradients[color].state),
 
-          {/*        "&:not(:last-child)": {*/}
-          {/*          mr: 1,*/}
-          {/*        },*/}
+                  "&:not(:last-child)": {
+                    mr: 1,
+                  },
 
-          {/*        "&:hover, &:focus, &:active": {*/}
-          {/*          borderColor: darkMode ? white.main : dark.main,*/}
-          {/*        },*/}
-          {/*      })}*/}
-          {/*      onClick={() => setSidenavColor(dispatch, color)}*/}
-          {/*    />*/}
-          {/*  ))}*/}
-          {/*</MDBox>*/}
+                  "&:hover, &:focus, &:active": {
+                    borderColor: darkMode ? white.main : dark.main,
+                  },
+                })}
+                onClick={() => setSidenavColor(dispatch, color)}
+              />
+            ))}
+          </MDBox>
         </MDBox>
 
-        {/*<MDBox mt={3} lineHeight={1}>*/}
-        {/*  <MDTypography variant="h5">Sidenav Type</MDTypography>*/}
-        {/*  <MDTypography variant="button" color="text">*/}
-        {/*    Choose between different sidenav types.*/}
-        {/*  </MDTypography>*/}
+        <MDBox mt={3} lineHeight={1}>
+          <MDTypography variant="h5">Chọn loại Menu</MDTypography>
 
-        {/*  <MDBox*/}
-        {/*    sx={{*/}
-        {/*      display: "flex",*/}
-        {/*      mt: 2,*/}
-        {/*      mr: 1,*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    <MDButton*/}
-        {/*      color="dark"*/}
-        {/*      variant="gradient"*/}
-        {/*      onClick={handleDarkSidenav}*/}
-        {/*      disabled={disabled}*/}
-        {/*      fullWidth*/}
-        {/*      sx={*/}
-        {/*        !transparentSidenav && !whiteSidenav*/}
-        {/*          ? sidenavTypeActiveButtonStyles*/}
-        {/*          : sidenavTypeButtonsStyles*/}
-        {/*      }*/}
-        {/*    >*/}
-        {/*      Dark*/}
-        {/*    </MDButton>*/}
-        {/*    <MDBox sx={{ mx: 1, width: "8rem", minWidth: "8rem" }}>*/}
-        {/*      <MDButton*/}
-        {/*        color="dark"*/}
-        {/*        variant="gradient"*/}
-        {/*        onClick={handleTransparentSidenav}*/}
-        {/*        disabled={disabled}*/}
-        {/*        fullWidth*/}
-        {/*        sx={*/}
-        {/*          transparentSidenav && !whiteSidenav*/}
-        {/*            ? sidenavTypeActiveButtonStyles*/}
-        {/*            : sidenavTypeButtonsStyles*/}
-        {/*        }*/}
-        {/*      >*/}
-        {/*        Transparent*/}
-        {/*      </MDButton>*/}
-        {/*    </MDBox>*/}
-        {/*    <MDButton*/}
-        {/*      color="dark"*/}
-        {/*      variant="gradient"*/}
-        {/*      onClick={handleWhiteSidenav}*/}
-        {/*      disabled={disabled}*/}
-        {/*      fullWidth*/}
-        {/*      sx={*/}
-        {/*        whiteSidenav && !transparentSidenav*/}
-        {/*          ? sidenavTypeActiveButtonStyles*/}
-        {/*          : sidenavTypeButtonsStyles*/}
-        {/*      }*/}
-        {/*    >*/}
-        {/*      White*/}
-        {/*    </MDButton>*/}
-        {/*  </MDBox>*/}
-        {/*</MDBox>*/}
+          <MDBox
+            sx={{
+              display: "flex",
+              mt: 2,
+              mr: 1,
+            }}
+          >
+            <MDButton
+              color="dark"
+              variant="gradient"
+              onClick={handleDarkSidenav}
+              disabled={disabled}
+              fullWidth
+              sx={
+                !transparentSidenav && !whiteSidenav
+                  ? sidenavTypeActiveButtonStyles
+                  : sidenavTypeButtonsStyles
+              }
+            >
+              Tối
+            </MDButton>
+            <MDBox sx={{ mx: 1, width: "8rem", minWidth: "8rem" }}>
+              <MDButton
+                color="dark"
+                variant="gradient"
+                onClick={handleTransparentSidenav}
+                disabled={disabled}
+                fullWidth
+                sx={
+                  transparentSidenav && !whiteSidenav
+                    ? sidenavTypeActiveButtonStyles
+                    : sidenavTypeButtonsStyles
+                }
+              >
+                Trong suốt
+              </MDButton>
+            </MDBox>
+            <MDButton
+              color="dark"
+              variant="gradient"
+              onClick={handleWhiteSidenav}
+              disabled={disabled}
+              fullWidth
+              sx={
+                whiteSidenav && !transparentSidenav
+                  ? sidenavTypeActiveButtonStyles
+                  : sidenavTypeButtonsStyles
+              }
+            >
+              Sáng
+            </MDButton>
+          </MDBox>
+        </MDBox>
         <MDBox
           display="flex"
           justifyContent="space-between"
