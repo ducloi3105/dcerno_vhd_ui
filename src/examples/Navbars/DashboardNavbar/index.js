@@ -53,12 +53,15 @@ import {
   setMiniSidenav,
   setOpenConfigurator,
 } from "context";
+import { toast } from "react-toastify";
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
+  const [isCamera, setIsCamera] = useState(false);
+  const [isTelevic, setIsTelevic] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
 
   useEffect(() => {
@@ -74,6 +77,43 @@ function DashboardNavbar({ absolute, light, isMini }) {
       setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
     }
 
+    const checkCamera = async () => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    let url = `${process.env.REACT_APP_SERVICE_URL}/camera/ping`;
+    let data;
+    try {
+      let response = await fetch(url, {
+        method: "GET",
+      });
+      data = await response.json();
+      console.log(data)
+    } catch (e) {
+      console.log(e)
+    } finally {
+    }
+  }
+
+  const checkTelevic = async () => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/ping`;
+    let data;
+    try {
+      let response = await fetch(url, {
+        method: "GET",
+      });
+      data = await response.json();
+      console.log(data)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+    const checkDevicesStatus = async () => {
+      await checkCamera()
+      await checkTelevic();
+    };
+
+    let interval = setInterval(() => checkDevicesStatus(), (1000*5))
+
     /** 
      The event listener that's calling the handleTransparentNavbar function when 
      scrolling the window.
@@ -84,7 +124,10 @@ function DashboardNavbar({ absolute, light, isMini }) {
     handleTransparentNavbar();
 
     // Remove event listener on cleanup
-    return () => window.removeEventListener("scroll", handleTransparentNavbar);
+    return () => {
+      window.removeEventListener("scroll", handleTransparentNavbar)
+      clearInterval(interval)
+    };
   }, [dispatch, fixedNavbar]);
 
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
@@ -140,26 +183,23 @@ function DashboardNavbar({ absolute, light, isMini }) {
               <MDButton
                 variant="contained"
                 size="medium"
-                color="success"
+                color={isCamera ? "success" : "secondary"}
                 // sx={{
                 //   mx: 2,
                 // }}
-                onClick={() => console.log('test')}
-                disabled={false}
+                disabled={isCamera}
               >
-                Camera: On
+                Trạng thái Camera
               </MDButton>
               <MDButton
                 variant="contained"
                 size="medium"
-                color="success"
+                color={isTelevic ? "success" : "secondary"}
                 sx={{
                   mx: 2,
                 }}
-                onClick={() => console.log('test')}
-                disabled={false}
               >
-                Microphone: On
+                Trạng thái Televic
               </MDButton>
               <IconButton
                 size="small"

@@ -48,6 +48,9 @@ import {
   setDarkMode,
 } from "context";
 
+// Notification
+import { toast } from 'react-toastify';
+
 function Configurator() {
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -79,7 +82,20 @@ function Configurator() {
     return () => window.removeEventListener("resize", handleDisabled);
   }, []);
 
-  const hanldeAutoTracking = () => {
+  const hanldeAutoTracking = (e) => {
+    let isAutoTracking = e.target.checked
+    try {
+      console.log('test')
+      if (isAutoTracking) {
+        toast.success('Bật auto tracking thành công')
+      } else {
+        toast.success('Tắt auto tracking thành công')
+      }
+    } catch (e) {
+      toast.error('')
+    } finally {
+
+    }
     setAutoTracking(!autoTracking);
   }
 
@@ -172,7 +188,7 @@ function Configurator() {
           <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
             <MDTypography variant="h6">Auto Tracking</MDTypography>
 
-            <Switch checked={autoTracking} onChange={hanldeAutoTracking} />
+            <Switch checked={autoTracking} onChange={(e) => hanldeAutoTracking(e)} />
           </MDBox>
           <Divider />
 
