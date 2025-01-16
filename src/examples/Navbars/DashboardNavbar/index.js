@@ -61,7 +61,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const [isCamera, setIsCamera] = useState(false);
-  const [isTelevic, setIsTelevic] = useState(false);
+  const [isTelevic, setIsTelevic] = useState(false)
+  const [devices, setDevices] = useState();
   const route = useLocation().pathname.split("/").slice(1);
 
   useEffect(() => {
@@ -178,19 +179,26 @@ function DashboardNavbar({ absolute, light, isMini }) {
       if (!data) {
         throw new Error("Không thể kết nối đến server")
       }
-      if (data.cam_ping && data.mic_ping) {
+      if (data.mic_ping && data.cam_pings && data.cam_pings.every(e => e.ping)) {
         toast.success("Kết nối thành công")
-      } else if (data.cam_ping){
-        toast.warning("Televic đang tắt")
-      }else if (data.mic_ping){
-        toast.warning("Camera đang tắt")
+      }
+      else if (!data.mic_ping && (!data.cam_pings || data.cam_pings.every(e => !e.ping))) {
+        toast.warning("Không thể kết nối đến các thiết bị")
       } else {
-        toast.warning("Televic và Camera đang tắt")
-
+        if (!data.cam_pings || data.cam_pings.some(e => !e.ping)){
+          data.cam_pings.forEach(cam => {
+            if (!cam.ping) {
+              toast.warning(`Camera ${cam.ip} đang tắt`)
+            }
+          })
+        }
+        if (!data.mic_ping) {
+          toast.warning("Microphone đang tắt")
+        }
       }
     } catch (e) {
       console.log(e)
-      toast.error("Không thể kiểm tra trạng thái Televic")
+      toast.error("Không thể kết nối đến các thiết bị")
     } finally {
       setIsTelevic(false)
     }

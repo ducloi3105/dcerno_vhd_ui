@@ -82,6 +82,10 @@ function MicroCard({ id, image, status, preset, title, action, ...props }) {
   }
 
   const handleCall = async () => {
+    if (!preset) {
+      toast.warning("Chưa cài preset")
+      return
+    }
     setLoading(true);
     await new Promise(resolve => setTimeout(resolve, 500));
     let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/${id}/call`;

@@ -216,15 +216,24 @@ function Configurator() {
 
       <MDBox pt={0.5} pb={3} px={3}>
         <MDBox>
-          <MDTypography variant="h5">Cấu hình Televic</MDTypography>
+          <MDTypography variant="h4">Cấu hình Televic</MDTypography>
           <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
-            <MDTypography variant="h6">Auto Tracking</MDTypography>
+            <MDTypography variant="h5">Auto Tracking</MDTypography>
+          </MDBox>
+          <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
+            <MDTypography variant="h6">Camera 1</MDTypography>
 
             <Switch checked={autoTracking} onChange={(e) => hanldeAutoTracking(e)} />
           </MDBox>
+          <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
+            <MDTypography variant="h6">Camera 2</MDTypography>
+
+            <Switch checked={autoTracking} onChange={(e) => hanldeAutoTracking(e)} />
+          </MDBox>
+
           <Divider />
 
-          <MDTypography variant="h5">Màu</MDTypography>
+          <MDTypography variant="h4">Màu</MDTypography>
 
           <MDBox mb={0.5}>
             {sidenavColors.map((color) => (
@@ -270,7 +279,7 @@ function Configurator() {
         </MDBox>
 
         <MDBox mt={3} lineHeight={1}>
-          <MDTypography variant="h5">Chọn loại Menu</MDTypography>
+          <MDTypography variant="h4">Chọn loại Menu</MDTypography>
 
           <MDBox
             sx={{
@@ -338,7 +347,7 @@ function Configurator() {
         </MDBox>
         <Divider />
         <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
-          <MDTypography variant="h6">Light / Dark</MDTypography>
+          <MDTypography variant="h6">Sáng / Tối</MDTypography>
 
           <Switch checked={darkMode} onChange={handleDarkMode} />
         </MDBox>
