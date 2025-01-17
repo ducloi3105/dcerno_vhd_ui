@@ -162,10 +162,10 @@ function DashboardNavbar({ absolute, light, isMini }) {
     }
   }
 
-  const checkTelevic = async () => {
+  const checkDevices = async () => {
     setIsTelevic(true)
     await new Promise(resolve => setTimeout(resolve, 500));
-    let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/ping`;
+    let url = `${process.env.REACT_APP_SERVICE_URL}/ping`;
     let data;
     try {
       let response = await fetch(url, {
@@ -263,7 +263,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                   mx: 2,
                 }}
                 disabled={isTelevic}
-                onClick={checkTelevic}
+                onClick={checkDevices}
               >
                 Kiểm tra kết nối
               </MDButton>

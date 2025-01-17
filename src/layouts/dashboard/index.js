@@ -43,12 +43,29 @@ function Dashboard() {
           method: "GET",
         });
         let data = await response.json();
+        // data = {
+        //   micros: [
+        //     {
+        //       uid: "001",
+        //       stat: "1",
+        //       preset: true,
+        //       camera_ip: '192.168.0.88'
+        //     },
+        //     {
+        //       uid: "002",
+        //       stat: "0",
+        //       preset: false,
+        //       camera_ip: ''
+        //     },
+        //   ],
+        // };
         setMicroItems(data.micros.map((micro) => {
           return {
             id: micro.uid,
             status: micro.stat,
             title: micro.uid,
             preset: micro.preset,
+            cameraIp: micro.camera_ip,
             image: microphone,
             action: {
               type: "internal",
@@ -61,8 +78,8 @@ function Dashboard() {
         console.log(e)
       }
     }
-    // fetchData()
-    let interval = setInterval(() => fetchData(), (1000))
+    fetchData()
+    let interval = setInterval(() => fetchData(), (1000000))
 
     return () => clearInterval(interval);
   }, []);
@@ -85,6 +102,7 @@ function Dashboard() {
                     description={item.description}
                     action={item.action}
                     preset={item.preset}
+                    cameraIp={item.cameraIp}
                   />
                 </MDBox>
               </Grid>

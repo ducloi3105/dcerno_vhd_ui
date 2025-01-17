@@ -42,6 +42,11 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
 import { toast } from 'react-toastify';
 
@@ -49,15 +54,48 @@ import { toast } from 'react-toastify';
 function MicroCard({ id, image, status, preset, title, action, ...props }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [cameras, setCameras] = React.useState();
+  const [camSelected, setCamSelected] = React.useState('');
+  const [microPreset, setMicroPreset] = React.useState(preset)
+
+  const handleChangeCamera = (event) => {
+    setCamSelected(event.target.value);
+  };
 
   const handleOpenDialog = () => {
+    fetchCameras()
     setOpen(true);
   };
 
+  const removePresets = async (id) => {
+    let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/${id}/preset`;
+    let data;
+    try {
+      let response = await fetch(url, {
+        method: "DELETE",
+      });
+      let status = response.status
+      data = await response.json();
+      if (status >= 300) {
+        throw new Error(data.error)
+      }
+      if (!data) {
+        throw new Error("Không thể kết nối đến server")
+      }
+    } catch (e) {
+      console.log(e)
+    } finally {
+    }
+  }
+
   const handlePreset = async () => {
+    if (!camSelected) {
+      toast.warning("Bạn chưa chọn camera")
+      return
+    }
     setLoading(true);
     await new Promise(resolve => setTimeout(resolve, 500));
-    let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/${id}/preset`;
+    let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/${id}/preset?camera_ip=${camSelected}`;
     let data;
     try {
       let response = await fetch(url, {
@@ -71,6 +109,7 @@ function MicroCard({ id, image, status, preset, title, action, ...props }) {
       if (!data) {
         throw new Error("Không thể kết nối đến server")
       }
+      setMicroPreset(true)
       toast.success("Gán thành công")
     } catch (e) {
       console.log(e)
@@ -114,6 +153,28 @@ function MicroCard({ id, image, status, preset, title, action, ...props }) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const fetchCameras = async () => {
+    let url = `${process.env.REACT_APP_SERVICE_URL}/cameras`;
+    let data;
+    try {
+      let response = await fetch(url, {
+        method: "GET",
+      });
+      let status = response.status
+      data = await response.json();
+      if (status >= 300) {
+        throw new Error(data.error)
+      }
+      if (!data) {
+        throw new Error("Không thể kết nối đến server")
+      }
+      setCameras(data)
+    } catch (e) {
+      console.log(e)
+    } finally {
+    }
+  }
 
   return (
     <Card
@@ -180,6 +241,23 @@ function MicroCard({ id, image, status, preset, title, action, ...props }) {
             <MDBadge badgeContent="Chưa set" color="dark" variant="gradient" size="sm" />
           </MDBox>}
         </MDBox>
+        <MDBox px={0} mb={1} lineHeight={0}>
+          <MDTypography color="text">
+            Camera đang gán:
+          </MDTypography>
+          {props.cameraIp ? <MDBox ml={-1}>
+            <MDBadge
+              badgeContent={props.cameraIp}
+              color="info"
+              variant="gradient"
+              size="md"
+              sx={{ "& .MuiBadge-badge": { fontSize: 10 } }}
+            />
+          </MDBox> : <MDBox ml={-1}>
+            <MDBadge badgeContent="Chưa gán" color="dark" variant="gradient" size="sm" />
+          </MDBox>}
+        </MDBox>
+
         {/* <MDBox mb={1} lineHeight={0}>
           <MDTypography variant="button" fontWeight="light" color="text">
             {description}
@@ -222,15 +300,26 @@ function MicroCard({ id, image, status, preset, title, action, ...props }) {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {`Xác nhận`}
+            {`Chọn camera gán vào microphone ${id}`}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {`Bạn có muốn gán vị trí camera cho micro ${id}?`}
+              <FormControl>
+                <FormLabel color="info">Camera</FormLabel>
+                <RadioGroup
+                  name="controlled-radio-buttons-group"
+                  value={camSelected}
+                  onChange={handleChangeCamera}
+                >
+                  {cameras && cameras.map(cam => {
+                    return <FormControlLabel key={cam} value={cam} control={<Radio />} label={cam} />
+                  })}
+                </RadioGroup>
+              </FormControl>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="error">Từ chối</Button>
+            <Button onClick={handleClose} color="error">Hủy</Button>
             <Button onClick={handlePreset} autoFocus>
               Chấp nhận
             </Button>

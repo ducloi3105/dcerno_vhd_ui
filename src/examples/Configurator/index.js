@@ -50,6 +50,8 @@ import {
 
 // Notification
 import { toast } from 'react-toastify';
+import MDBadge from "../../components/MDBadge";
+import * as React from "react";
 
 function Configurator() {
   const [controller, dispatch] = useMaterialUIController();
@@ -62,13 +64,13 @@ function Configurator() {
     darkMode,
   } = controller;
   const [disabled, setDisabled] = useState(false);
-  const [autoTracking, setAutoTracking] = useState(false);
+  const [autoTracking, setAutoTracking] = useState();
   const sidenavColors = ["primary", "dark", "info", "success", "warning", "error"];
 
   // Use the useEffect hook to change the button state for the sidenav type based on window size.
   useEffect(() => {
     const fetchAutoTracking = async () => {
-      let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/tracking`;
+      let url = `${process.env.REACT_APP_SERVICE_URL}/tracking`;
       let data;
       try {
         let response = await fetch(url, {
@@ -76,11 +78,10 @@ function Configurator() {
         });
         let status = response.status
         if (status !== 200) {
-          setAutoTracking(false)
           return
         }
         data = await response.json();
-        setAutoTracking(data.tracking_enabled)
+        setAutoTracking(data)
       } catch (e) {
         console.log(e)
       }
@@ -102,9 +103,9 @@ function Configurator() {
     return () => window.removeEventListener("resize", handleDisabled);
   }, []);
 
-  const hanldeAutoTracking = async (e) => {
+  const hanldeAutoTracking = async (e, cameraIp) => {
     let isAutoTracking = e.target.checked
-    let url = `${process.env.REACT_APP_SERVICE_URL}/microphones/tracking?tracking_enabled=${isAutoTracking}`;
+    let url = `${process.env.REACT_APP_SERVICE_URL}/tracking?tracking_enabled=${isAutoTracking}&camera_ip=${cameraIp}`;
     let data;
     try {
       let response = await fetch(url, {
@@ -125,7 +126,7 @@ function Configurator() {
         } else {
           toast.success('Tắt auto tracking thành công')
         }
-        setAutoTracking(!autoTracking);
+        setAutoTracking(data);
       }
     } catch (e) {
       toast.error('Lỗi khi bật/tắt auto tracking')
@@ -220,16 +221,22 @@ function Configurator() {
           <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
             <MDTypography variant="h5">Auto Tracking</MDTypography>
           </MDBox>
-          <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
-            <MDTypography variant="h6">Camera 1</MDTypography>
+          {autoTracking && Object.keys(autoTracking).map(ip => {
+            return <MDBox key={ip} display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
+                    <MDTypography variant="h6">
+                      Camera
+                      <MDBadge
+                        badgeContent={ip}
+                        color="info"
+                        variant="gradient"
+                        // size="md"
+                        sx={{ "& .MuiBadge-badge": { fontSize: 12 } }}
+                      />
+                    </MDTypography>
 
-            <Switch checked={autoTracking} onChange={(e) => hanldeAutoTracking(e)} />
-          </MDBox>
-          <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
-            <MDTypography variant="h6">Camera 2</MDTypography>
-
-            <Switch checked={autoTracking} onChange={(e) => hanldeAutoTracking(e)} />
-          </MDBox>
+                    <Switch checked={autoTracking[ip]} onChange={(e) => hanldeAutoTracking(e, ip)} />
+                  </MDBox>
+          })}
 
           <Divider />
 
