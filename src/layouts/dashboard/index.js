@@ -78,8 +78,8 @@ function Dashboard() {
         console.log(e)
       }
     }
-    fetchData()
-    let interval = setInterval(() => fetchData(), (1000000))
+    // fetchData()
+    let interval = setInterval(() => fetchData(), (1000))
 
     return () => clearInterval(interval);
   }, []);
