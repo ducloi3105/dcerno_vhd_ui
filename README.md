@@ -2,9 +2,31 @@
 
 ![version](https://img.shields.io/badge/version-2.2.0-blue.svg) [![GitHub issues open](https://img.shields.io/github/issues/creativetimofficial/material-dashboard-react.svg)](https://github.com/creativetimofficial/material-dashboard-react/issues?q=is%3Aopen+is%3Aissue) [![GitHub issues closed](https://img.shields.io/github/issues-closed-raw/creativetimofficial/material-dashboard-react.svg)](https://github.com/creativetimofficial/material-dashboard-react/issues?q=is%3Aissue+is%3Aclosed)
 
+## 📋 Tài liệu cho Developer
+
+**Hướng dẫn dành cho người mới bắt đầu:**
+- 🚀 **[QUICK_START.md](./QUICK_START.md)** - Hướng dẫn chạy ứng dụng trong 5 phút
+- 📖 **[DEVELOPER_DOCS.md](./DEVELOPER_DOCS.md)** - Tài liệu chi tiết cho developer
+- 🔌 **[API_DOCS.md](./API_DOCS.md)** - Tài liệu API backend requirements
+
+## Tổng quan hệ thống
+
+Đây là frontend React cho hệ thống Camera Tracking dựa trên microphone. Ứng dụng quản lý:
+- **Microphone Management**: Theo dõi trạng thái các microphone
+- **Camera Integration**: Gán và gọi camera từ microphone
+- **Auto Tracking**: Tự động tracking camera theo vị trí microphone
+- **Real-time Monitoring**: Cập nhật trạng thái real-time
+
+## Công nghệ chính
+
+- **React 18.2.0** với Material-UI
+- **Docker** ready với Nginx
+- **Real-time polling** từ backend API
+- **Toast notifications** cho user feedback
+
 ![Image](https://s3.amazonaws.com/creativetim_bucket/products/71/original/material-dashboard-react.jpg?1638950990)
 
-Material Dashboard 2 React is our newest free MUI Admin Template based on React. If you’re a developer looking to create an admin dashboard that is developer-friendly, rich with features, and highly customisable, here is your match. Our innovative MUI & React dashboard comes with a beautiful design inspired by Google's Material Design and it will help you create stunning websites & web apps to delight your clients.
+Material Dashboard 2 React is our newest free MUI Admin Template based on React. If you're a developer looking to create an admin dashboard that is developer-friendly, rich with features, and highly customisable, here is your match. Our innovative MUI & React dashboard comes with a beautiful design inspired by Google's Material Design and it will help you create stunning websites & web apps to delight your clients.
 
 **Fully Coded Elements**
 Material Dashboard 2 React is built with over 70 frontend individual elements, like buttons, inputs, navbars, nav tabs, cards, or alerts, giving you the freedom of choosing and combining. All components can take variations in color, which you can easily modify using MUI styled() API and sx prop. You will save a lot of time going from prototyping to full-functional code because all elements are implemented.
